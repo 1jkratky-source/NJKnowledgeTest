@@ -3,7 +3,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "check": "node scripts/check-bank.mjs",
+    "check": "node scripts/check-bank.mjs && node scripts/check-site.mjs",
     "dev": "python3 -m http.server 4173"
   }
 }

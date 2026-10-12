@@ -1,0 +1,43 @@
+# NJ Permit Practice
+
+> Free, independent study material for the New Jersey MVC basic automobile knowledge test.
+
+Canonical site: https://njknowledgetest.netlify.app/
+Last comprehensive review: 2026-10-11
+Current manual used: NJ MVC Driver Manual, revised 09/26
+
+## What the site provides
+
+- 334 original New Jersey-specific multiple-choice practice questions.
+- A balanced 10-question diagnostic covering all ten major categories.
+- A balanced 50-question mock exam with the official 40-correct passing target.
+- Immediate explanations and links to sources after each answer.
+- Category study and missed-question review stored locally in the visitor's browser.
+- All study material is free and requires no account.
+
+## Core NJ knowledge test facts
+
+- The basic automobile knowledge test has 50 scored questions plus an organ-donation survey question.
+- A passing result requires 40 correct answers, or 80 percent.
+- A failed knowledge test may be retaken after seven days.
+- The NJ MVC fee schedule lists the automobile examination permit at $10.
+- The test requires an MVC permit and knowledge-test appointment; availability during a permit appointment varies.
+- The secure live MVC question bank is not public. This site does not claim to reproduce leaked exam questions.
+
+## Main pages
+
+- Practice test: https://njknowledgetest.netlify.app/
+- Study guide: https://njknowledgetest.netlify.app/study-guide/
+- Test format, cost, and appointment details: https://njknowledgetest.netlify.app/test-details/
+- Research and editorial policy: https://njknowledgetest.netlify.app/about/
+- Privacy policy: https://njknowledgetest.netlify.app/privacy/
+
+## Primary official sources
+
+- NJ MVC manuals: https://www.nj.gov/mvc/about/manuals.htm
+- NJ MVC sample knowledge test: https://www.nj.gov/mvc/license/sample_knowledge_test.htm
+- NJ MVC knowledge test process and languages: https://www.nj.gov/mvc/license/knowledgetest.htm
+- NJ MVC first driver license process: https://www.nj.gov/mvc/license/firstlic.htm
+- NJ MVC license and permit fees: https://www.nj.gov/mvc/license/licfees.htm
+
+NJ Permit Practice is not affiliated with, endorsed by, or operated by the New Jersey Motor Vehicle Commission. Official government sources control when requirements differ or change.

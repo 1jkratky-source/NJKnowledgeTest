@@ -1,0 +1,10 @@
+{
+  "name": "NJ Permit Practice",
+  "short_name": "NJ Permit",
+  "description": "Free New Jersey MVC knowledge test practice.",
+  "start_url": "/#practice",
+  "display": "standalone",
+  "background_color": "#f2f4f5",
+  "theme_color": "#0f3d75",
+  "lang": "en-US"
+}

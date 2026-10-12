@@ -2,6 +2,7 @@ import { categories, questions, sourceCatalog } from "./questions.js";
 
 const PASSING_SCORE = 40;
 const EXAM_SIZE = 50;
+const QUICK_SIZE = 10;
 const STORAGE_KEY = "nj-driver-practice-v1";
 
 const sourceById = Object.fromEntries(sourceCatalog.map((source) => [source.id, source]));
@@ -28,14 +29,16 @@ const loadStats = () => {
 
 let stats = loadStats();
 let state = {
-  mode: "study",
-  category: "All categories",
-  session: shuffle([...questions]),
+  mode: "quick",
+  category: getInitialCategory(),
+  session: [],
   index: 0,
   answers: {},
   locked: {},
   examFinished: false,
 };
+
+state.session = buildSession(state.mode);
 
 function saveStats() {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(stats));
@@ -47,6 +50,31 @@ function shuffle(items) {
 
 function sample(items, size) {
   return shuffle(items).slice(0, Math.min(size, items.length));
+}
+
+function balancedSample(items, size) {
+  const groups = categories.map((category) =>
+    shuffle(items.filter((question) => question.category === category)),
+  );
+  const result = [];
+  while (result.length < size && groups.some((group) => group.length)) {
+    for (const group of groups) {
+      if (group.length && result.length < size) result.push(group.pop());
+    }
+  }
+  return shuffle(result);
+}
+
+function getInitialCategory() {
+  const requested = new URLSearchParams(window.location.search).get("category");
+  return categories.includes(requested) ? requested : "All categories";
+}
+
+function updateCategoryUrl(category) {
+  const url = new URL(window.location.href);
+  if (category === "All categories") url.searchParams.delete("category");
+  else url.searchParams.set("category", category);
+  window.history.replaceState({}, "", url);
 }
 
 function getFilteredQuestions() {
@@ -63,7 +91,12 @@ function getMissedQuestions() {
 
 function buildSession(mode = state.mode) {
   const filtered = getFilteredQuestions();
-  if (mode === "exam") return sample(questions, EXAM_SIZE);
+  if (mode === "quick") {
+    return state.category === "All categories"
+      ? balancedSample(questions, QUICK_SIZE)
+      : sample(filtered, QUICK_SIZE);
+  }
+  if (mode === "exam") return balancedSample(questions, EXAM_SIZE);
   if (mode === "missed") return shuffle(getMissedQuestions());
   return shuffle(filtered);
 }
@@ -88,7 +121,8 @@ function setMode(mode) {
 
 function setCategory(category) {
   state.category = category;
-  resetSession(state.mode === "exam" ? "study" : state.mode);
+  updateCategoryUrl(category);
+  resetSession(state.mode === "exam" || state.mode === "missed" ? "quick" : state.mode);
 }
 
 function currentQuestion() {
@@ -159,7 +193,7 @@ function className(...parts) {
 function renderSign(visual) {
   if (!visual) return "";
   return `
-    <div class="visual-wrap" aria-hidden="true">
+    <div class="visual-wrap" role="img" aria-label="Road sign illustration: ${visual.label}">
       <div class="${className("sign", `sign-${visual.shape}`, `tone-${visual.tone || "white"}`)}">
         <span>${visual.label}</span>
       </div>
@@ -222,7 +256,7 @@ function renderQuestionCard() {
         : "No questions match this category.";
     return `
       <section class="question-panel empty-state">
-        <h1>${message}</h1>
+        <h2>${message}</h2>
         <button class="primary" type="button" data-action="study-all">Study all categories</button>
       </section>
     `;
@@ -239,7 +273,7 @@ function renderQuestionCard() {
       </div>
       <div class="progress-track"><div style="width:${progress}%"></div></div>
       ${renderSign(question.visual)}
-      <h1>${question.prompt}</h1>
+      <h2>${question.prompt}</h2>
       <div class="options">${renderOptions(question)}</div>
       ${renderFeedback(question)}
       <div class="question-actions">
@@ -247,7 +281,9 @@ function renderQuestionCard() {
         ${
           state.mode === "exam" && score.answered === state.session.length && !state.examFinished
             ? '<button class="primary" type="button" data-action="finish-exam">Finish exam</button>'
-            : `<button class="primary" type="button" data-action="next" ${state.index === state.session.length - 1 ? "disabled" : ""}>Next</button>`
+            : state.index === state.session.length - 1 && state.locked[question.id]
+              ? '<button class="primary" type="button" data-action="new-session">Start another set</button>'
+              : `<button class="primary" type="button" data-action="next" ${state.index === state.session.length - 1 ? "disabled" : ""}>Next</button>`
         }
       </div>
     </section>
@@ -256,9 +292,10 @@ function renderQuestionCard() {
 
 function renderModeControls() {
   const controls = [
-    ["study", "Study"],
-    ["exam", "Exam 50"],
-    ["missed", `Missed ${getMissedQuestions().length}`],
+    ["quick", "Quick 10"],
+    ["exam", "Mock exam 50"],
+    ["study", "Study bank"],
+    ["missed", `Review ${getMissedQuestions().length}`],
   ];
   return controls
     .map(([mode, label]) => {
@@ -354,7 +391,7 @@ function renderSidebar() {
           <strong>${score.correct}/${score.answered || 0}</strong>
         </div>
         <div>
-          <span>Overall</span>
+          <span>Accuracy</span>
           <strong>${overallPct}%</strong>
         </div>
         <div>
@@ -397,17 +434,35 @@ function render() {
         <div class="brand">
           <span class="mark">NJ</span>
           <div>
-            <p>Driver Knowledge Practice</p>
-            <strong>${questions.length} source-grounded questions</strong>
+            <p>NJ Permit Practice</p>
+            <strong>Free, current, and source-grounded</strong>
           </div>
         </div>
-        <div class="toolbar">
+        <nav class="site-nav" aria-label="Main navigation">
+          <a href="#practice">Practice</a>
+          <a href="/study-guide/">Study guide</a>
+          <a href="/test-details/">Test details</a>
+          <a href="#faq">FAQ</a>
+        </nav>
+      </header>
+      <section class="practice-intro" id="practice">
+        <div>
+          <p class="eyebrow">Updated for the September 2026 NJ MVC manual</p>
+          <h1>Free New Jersey Permit Practice Test</h1>
+          <p>Learn from ${questions.length} NJ-specific questions with instant explanations. Start with a balanced 10-question check or take a full 50-question mock exam.</p>
+        </div>
+        <dl class="test-facts" aria-label="NJ knowledge test facts">
+          <div><dt>Real test</dt><dd>50 questions</dd></div>
+          <div><dt>Passing score</dt><dd>40 correct</dd></div>
+          <div><dt>Cost here</dt><dd>Free</dd></div>
+        </dl>
+      </section>
+      <section class="toolbar" aria-label="Practice controls">
           <div class="segmented">${renderModeControls()}</div>
           <select aria-label="Category">${renderCategoryOptions()}</select>
           <button type="button" data-action="new-session">New set</button>
           <button type="button" data-action="reset-progress">Reset progress</button>
-        </div>
-      </header>
+      </section>
       <div class="workspace">
         ${renderQuestionCard()}
         ${renderSidebar()}
@@ -448,7 +503,8 @@ app.addEventListener("click", (event) => {
   if (action === "reset-progress") resetProgress();
   if (action === "study-all") {
     state.category = "All categories";
-    resetSession("study");
+    updateCategoryUrl(state.category);
+    resetSession("quick");
   }
 });
 
