@@ -1,8 +1,10 @@
+import { questionAdditions } from "./question-additions.js";
+
 export const sourceCatalog = [
   {
     id: "mvc-manual",
     name: "NJ MVC Driver Manual",
-    detail: "English manual, revised September 2025",
+    detail: "English manual, revised September 2026",
     url: "https://www.nj.gov/mvc/about/manuals.htm",
   },
   {
@@ -23,6 +25,42 @@ export const sourceCatalog = [
     detail: "Public NJ practice-test topic comparison from DMV Written Test and Zutobi",
     url: "https://www.dmv-written-test.com/new-jersey/practice-test-1.html",
   },
+  {
+    id: "mvc-road-test",
+    name: "NJ MVC Road Test",
+    detail: "Official road-test requirements and retest timing",
+    url: "https://www.nj.gov/mvc/license/roadtest.htm",
+  },
+  {
+    id: "mvc-lost-license",
+    name: "NJ MVC Lost or Stolen License",
+    detail: "Official replacement guidance",
+    url: "https://www.nj.gov/mvc/license/liclost.htm",
+  },
+  {
+    id: "mvc-faq",
+    name: "NJ MVC FAQ",
+    detail: "Official answers about suspensions and conditional licenses",
+    url: "https://www.nj.gov/mvc/about/faq.htm",
+  },
+  {
+    id: "mvc-points",
+    name: "NJ MVC Point Schedule",
+    detail: "Official motor-vehicle violation point schedule",
+    url: "https://www.nj.gov/mvc/license/points-schedule.htm",
+  },
+  {
+    id: "nj-crosswalk-law",
+    name: "NJ Crosswalk Law",
+    detail: "Attorney General summary of N.J.S.A. 39:4-36",
+    url: "https://www.nj.gov/oag/hts/downloads/Crosswalk_Warning_Palm_Card.pdf",
+  },
+  {
+    id: "mvc-share-keys",
+    name: "NJ MVC Share the Keys",
+    detail: "Official Safe Passing Law guidance",
+    url: "https://www.nj.gov/mvc/pdf/license/STKResourceGuide.pdf",
+  },
 ];
 
 export const categories = [
@@ -38,7 +76,7 @@ export const categories = [
   "Vehicle, Insurance & Inspection",
 ];
 
-export const questions = [
+const baseQuestions = [
   {
     id: "test-001",
     category: "Test Basics & Documents",
@@ -780,11 +818,11 @@ export const questions = [
     id: "row-007",
     category: "Right-of-Way & Intersections",
     difficulty: "Core",
-    prompt: "What must a motorist do for pedestrians in crosswalks?",
-    options: ["Stop for them", "Honk to make them hurry", "Pass around them if there is room", "Stop only if the crosswalk is painted red"],
+    prompt: "What must a motorist do for a pedestrian crossing in a marked crosswalk?",
+    options: ["Stop and remain stopped", "Honk to make the pedestrian hurry", "Pass around the pedestrian if there is room", "Stop only if the crosswalk is painted red"],
     answerIndex: 0,
-    explanation: "New Jersey motorists must stop for pedestrians in crosswalks.",
-    source: "mvc-manual",
+    explanation: "New Jersey law requires motorists to stop and remain stopped for pedestrians crossing within a marked crosswalk.",
+    source: "nj-crosswalk-law",
   },
   {
     id: "row-008",
@@ -1910,11 +1948,11 @@ export const questions = [
     id: "share-001",
     category: "Sharing the Road",
     difficulty: "Core",
-    prompt: "When approaching a pedestrian in a marked or unmarked crosswalk, a motorist must:",
-    options: ["Stop", "Only slow if the pedestrian waves", "Pass behind them at any speed", "Use the horn and continue"],
+    prompt: "When a pedestrian is crossing within an unmarked crosswalk at an intersection, a motorist must:",
+    options: ["Yield the right-of-way and stop if necessary", "Continue because only painted crosswalks count", "Pass behind the pedestrian at any speed", "Use the horn and continue"],
     answerIndex: 0,
-    explanation: "Drivers must stop for pedestrians in marked or unmarked crosswalks.",
-    source: "mvc-manual",
+    explanation: "New Jersey law distinguishes the duties: stop and remain stopped at marked crosswalks, and yield the right-of-way at unmarked crosswalks.",
+    source: "nj-crosswalk-law",
   },
   {
     id: "share-002",
@@ -2307,3 +2345,5 @@ export const questions = [
     source: "mvc-manual",
   },
 ];
+
+export const questions = [...baseQuestions, ...questionAdditions];

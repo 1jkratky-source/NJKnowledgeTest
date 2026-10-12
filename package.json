@@ -1,0 +1,9 @@
+{
+  "name": "nj-driver-knowledge-practice",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "check": "node scripts/check-bank.mjs",
+    "dev": "python3 -m http.server 4173"
+  }
+}
